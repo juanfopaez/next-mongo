@@ -2,13 +2,14 @@
 
 import { useRouter } from 'next/navigation'
 
-interface UserTableOptionsProps {
+interface ProductTableOptionsProps {
   userId: string
+  productId: string
 }
 
-async function deleteUser (userId: string, refresh: () => void) {
+async function deleteProduct (userId:string, productId: string, refresh: () => void) {
   try {
-    await fetch(`/api/users/${userId}`, {
+    await fetch(`/api/users/${userId}/products/${productId}`, {
       method: 'DELETE'
     })
     refresh()
@@ -17,24 +18,19 @@ async function deleteUser (userId: string, refresh: () => void) {
   }
 }
 
-export function UserTableOptions ({ userId }:UserTableOptionsProps) {
+export function ProductTableOptions ({ userId, productId }:ProductTableOptionsProps) {
   const router = useRouter()
 
-  const handleOnAddProduct = () => {
-    router.push(`/users/${userId}/products`)
-  }
-
   const handleOnEdit = () => {
-    router.push(`/users/${userId}`)
+    router.push(`/users/${userId}/products/${productId}`)
   }
 
   const handleOnDelete = async () => {
-    deleteUser(userId, router.refresh)
+    deleteProduct(userId, productId, router.refresh)
   }
 
   return (
     <div>
-      <button className='bg-yellow-600 text-white py-1 px-2 rounded-md mr-2' onClick={() => handleOnAddProduct()}>Add Product</button>
       <button className='bg-blue-600 text-white py-1 px-2 rounded-md mr-2' onClick={() => handleOnEdit()}>Edit</button>
       <button className='bg-red-600 text-white py-1 px-2 rounded-md' onClick={() => handleOnDelete()}>Delete</button>
     </div>

@@ -6,3 +6,11 @@ export const UserTableCols = [
   'Position',
   'Salary - USD'
 ]
+
+export const ProductTableCols = [
+  'Name',
+  'Category',
+  'Model',
+  'Serial Number',
+  'Brand'
+]
