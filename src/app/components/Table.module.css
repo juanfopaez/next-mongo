@@ -1,0 +1,4 @@
+.tableContainer {
+    max-height: calc(6 * 3.5rem); /* Set the maximum height to show 6 rows */
+    overflow-y: auto; /* Add vertical scrollbar when necessary */
+}
