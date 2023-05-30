@@ -13,7 +13,7 @@ const fetchUsersData = async () => {
 }
 
 export default async function Home () {
-  const { users }: { users: Array<any> } = await fetchUsersData()
+  const { users }: { users: Array<any> } = await fetchUsersData() || []
   return (
     <div>
       {users

@@ -20,7 +20,7 @@ const fetchProductsData = async (id: String) => {
 export default async function Products ({ params }:ProductsProps) {
   const { id } = params
 
-  const { products }: { products: Array<any> } = await fetchProductsData(id)
+  const { products }: { products: Array<any> } = await fetchProductsData(id) || []
 
   return (
     <div>
