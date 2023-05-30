@@ -15,11 +15,12 @@ interface Product {
 interface ProductFormProps {
     defaultValues?: Partial<Product>;
     productId?: string;
+    userId?: string;
 }
 
-const putProductData = async (id: string, data: Product) => {
+const putProductData = async (userId: string, productId:string, data: Product) => {
   try {
-    const productUpdated = await fetch(`${baseUrl}/api/users/${id}`, {
+    const productUpdated = await fetch(`${baseUrl}/api/users/${userId}/products/${productId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -32,14 +33,14 @@ const putProductData = async (id: string, data: Product) => {
   }
 }
 
-const postProductData = async (data: Product) => {
+const postProductData = async (userId:string, data: Product) => {
   try {
-    const newProduct = await fetch(`${baseUrl}/api/users`, {
+    const newProduct = await fetch(`${baseUrl}/api/users/${userId}/products`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ ...data })
+      body: JSON.stringify({ data, userId })
     })
     return newProduct.json()
   } catch (err) {
@@ -47,32 +48,33 @@ const postProductData = async (data: Product) => {
   }
 }
 
-export function ProductForm ({ defaultValues, productId }: ProductFormProps) {
+export function ProductForm ({ defaultValues, productId, userId }: ProductFormProps) {
   const { register, handleSubmit, formState: { errors } } = useForm<Product>({ defaultValues })
 
   const router = useRouter()
 
   const handleOnCancel = () => {
-    router.push('/')
+    router.push(`/users/${userId}/products`)
   }
 
   const handleOnSubmit:SubmitHandler<Product> = async (data) => {
-    if (productId) {
+    if (productId && userId) {
       try {
-        const productUpdated = await putProductData(productId, data)
+        const productUpdated = await putProductData(userId, productId, data)
         if (productUpdated) {
           router.refresh()
-          router.push('/')
+          router.push(`/users/${userId}/products`)
         }
       } catch (error) {
         console.error(error)
       }
     } else {
       try {
-        const newProduct = await postProductData(data)
+        if (!userId) throw new Error('User Id is required')
+        const newProduct = await postProductData(userId, data)
         if (newProduct) {
           router.refresh()
-          router.push('/')
+          router.push(`/users/${userId}/products`)
         }
       } catch (error) {
         console.error(error)

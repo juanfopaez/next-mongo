@@ -1,5 +1,6 @@
 import { ProductTableOptions, Table } from '@/app/components'
 import { ProductTableCols, baseUrl } from '@/app/constants'
+import Link from 'next/link'
 
 interface ProductsProps {
     params: {
@@ -46,6 +47,14 @@ export default async function Products ({ params }:ProductsProps) {
           </div>
           )
         : null}
+      <div className='flex justify-end bg-gray-200'>
+        <Link href='/' prefetch={false}>
+          <button className='bg-yellow-600 text-white py-1 px-2 rounded-md mr-4 mb-4' type='button'>Go Back</button>
+        </Link>
+        <Link href={`/users/${id}/products/add`} prefetch={false}>
+          <button className='bg-green-600 text-white py-1 px-2 rounded-md mr-4 mb-4' type='button'>Create Product</button>
+        </Link>
+      </div>
     </div>
   )
 }
