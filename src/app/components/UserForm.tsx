@@ -1,6 +1,9 @@
 'use client'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
+import { useRouter } from 'next/navigation'
+import { baseUrl } from '../constants'
+
 interface User {
     name: string;
     lastName: string;
@@ -15,19 +18,72 @@ interface UserFormProps {
     userId?: string;
 }
 
+const putUserData = async (id: string, data: User) => {
+  try {
+    const userUpdated = await fetch(`${baseUrl}/api/users/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ...data })
+    })
+    return userUpdated.json()
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+const postUserData = async (data: User) => {
+  try {
+    const newUser = await fetch(`${baseUrl}/api/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ...data })
+    })
+    return newUser.json()
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 export function UserForm ({ defaultValues, userId }: UserFormProps) {
   const { register, handleSubmit, formState: { errors } } = useForm<User>({ defaultValues })
 
+  const router = useRouter()
+
+  const handleOnCancel = () => {
+    router.push('/')
+  }
+
   const handleOnSubmit:SubmitHandler<User> = async (data) => {
     if (userId) {
-      console.log('submit', data)
-      console.log('userId', userId)
+      try {
+        const userUpdated = await putUserData(userId, data)
+        if (userUpdated) {
+          router.refresh()
+          router.push('/')
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    } else {
+      try {
+        const newUser = await postUserData(data)
+        if (newUser) {
+          router.refresh()
+          router.push('/')
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 
   return (
     <form onSubmit={handleSubmit(handleOnSubmit)} className='min-w-md mx-auto bg-gray-100 p-6 rounded-lg'>
-      <h1 className='text-3xl font-bold text-blue-600 mb-4'>Edit User Form</h1>
+      <h1 className='text-3xl font-bold text-blue-600 mb-4'>{defaultValues ? 'Edit' : 'Create'} User Form</h1>
       <div className='mb-4 w-96'>
         <label htmlFor='name' className='block mb-1'>Name</label>
         <div className='flex flex-col'>
@@ -70,7 +126,10 @@ export function UserForm ({ defaultValues, userId }: UserFormProps) {
         </div>
       </div>
 
-      <button type='submit' className='bg-blue-500 text-white px-4 py-2 rounded'>Submit</button>
+      <div className='flex justify-between'>
+        <button type='submit' className='bg-blue-500 text-white px-4 py-2 rounded'>Submit</button>
+        <button onClick={handleOnCancel} type='button' className='bg-red-500 text-white px-4 py-2 rounded'>Cancel</button>
+      </div>
     </form>
   )
 }

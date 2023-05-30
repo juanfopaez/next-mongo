@@ -1,10 +1,9 @@
+import { UserForm } from '@/app/components'
 
-export default function UserForm () {
-  // const { register, handleSubmit, formState: { errors } } = useForm<User>({ defaultValues })
+export default async function UserCreation () {
   return (
-    <>
-      Hola
-    </>
-
+    <div className='bg-gray-200'>
+      <UserForm />
+    </div>
   )
 }

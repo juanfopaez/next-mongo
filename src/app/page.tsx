@@ -1,10 +1,11 @@
+import Link from 'next/link'
 import { Table, UserTableOptions } from './components'
 
 import { UserTableCols, baseUrl } from './constants'
 
 const fetchUsersData = async () => {
   try {
-    const data = await fetch(`${baseUrl}/api/users`)
+    const data = await fetch(`${baseUrl}/api/users`, { cache: 'no-cache' })
     return (data.json())
   } catch (err) {
     console.error(err)
@@ -39,6 +40,11 @@ export default async function Home () {
           </div>
           )
         : null}
+      <div className='flex justify-end bg-gray-200'>
+        <Link href='/user' prefetch={false}>
+          <button className='bg-green-600 text-white py-1 px-2 rounded-md mr-4 mb-4' type='button'>Create User</button>
+        </Link>
+      </div>
     </div>
   )
 }

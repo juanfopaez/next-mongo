@@ -9,7 +9,7 @@ interface UserEditProps {
 
 const fetchUserData = async (id: string) => {
   try {
-    const user = await fetch(`${baseUrl}/api/users/${id}`)
+    const user = await fetch(`${baseUrl}/api/users/${id}`, { cache: 'no-cache' })
     return user.json()
   } catch (err) {
     console.error(err)
@@ -20,8 +20,6 @@ export default async function UserEdit ({ params }: UserEditProps) {
   const { id } = params
 
   const { user } = await fetchUserData(id)
-
-  console.log(user)
 
   const defaultValues = user
     ? {
